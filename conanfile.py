@@ -16,7 +16,7 @@ class LibpngConan(ConanFile):
     default_options = "shared=False"
     url="http://github.com/lasote/conan-theft"
     license="https://github.com/silentbicycle/theft/blob/v0.2.0/LICENSE"
-    exports=["CMakelists.txt"]
+    exports=["CMakeLists.txt"]
     
        
     def source(self):
@@ -29,18 +29,13 @@ class LibpngConan(ConanFile):
         """ Define your project building. You decide the way of building it
             to reuse it later in any other project.
         """
-        env = ConfigureEnvironment(self.deps_cpp_info, self.settings)
-
-        if self.settings.os == "Linux" or self.settings.os == "Macos":            
-            self.run("cd %s && %s make" % (self.ZIP_FOLDER_NAME, env.command_line))
-        else:
-            copyfile("CMakeLists.txt", "%s/CMakeLists.txt" % self.ZIP_FOLDER_NAME)
-            cmake = CMake(self.settings)
-            self.run("cd %s && mkdir _build" % self.ZIP_FOLDER_NAME)
-            cd_build = "cd %s/_build" % self.ZIP_FOLDER_NAME
-            self.run('%s && cmake .. %s %s' % (cd_build, cmake.command_line))
-            self.run("%s && cmake --build . %s" % (cd_build, cmake.build_config))
-                
+        copyfile("CMakeLists.txt", "%s/CMakeLists.txt" % self.ZIP_FOLDER_NAME)
+        cmake = CMake(self.settings)
+        self.run("cd %s && mkdir _build" % self.ZIP_FOLDER_NAME)
+        cd_build = "cd %s/_build" % self.ZIP_FOLDER_NAME
+        self.run('%s && cmake .. %s' % (cd_build, cmake.command_line))
+        self.run("%s && cmake --build . %s" % (cd_build, cmake.build_config))
+            
     def package(self):
         """ Define your conan structure: headers, libs, bins and data. After building your
             project, this method is called to create a defined structure:
