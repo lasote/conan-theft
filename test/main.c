@@ -189,7 +189,8 @@ static list *split_list_copy(list *l, bool first_half) {
     list *nl = copy_list(l);
     if (nl == NULL) { return THEFT_ERROR; }
     list *t = nl;
-    for (int i = 0; i < len/2 - 1; i++) { t = t->next; }
+    int i;
+    for (i = 0; i < len/2 - 1; i++) { t = t->next; }
 
     list *tail = t->next;
     t->next = NULL;
@@ -218,7 +219,8 @@ static void *list_shrink(void *instance, uint32_t tactic, void *env) {
         return split_list_copy(l, false);
     } else if (tactic == 2) {      /* div whole list by 2 */
         bool nonzero = false;
-        for (list *link = l; link; link = link->next) {
+        list* link;
+        for (link = l; link; link = link->next) {
             if (link->v > 0) { nonzero = true; break; }
         }
 
@@ -226,7 +228,7 @@ static void *list_shrink(void *instance, uint32_t tactic, void *env) {
             list *nl = copy_list(l);
             if (nl == NULL) { return THEFT_ERROR; }
 
-            for (list *link = nl; link; link = link->next) {
+            for (link = nl; link; link = link->next) {
                 link->v /= 2;
             }
             return nl;
@@ -327,7 +329,8 @@ static theft_trial_res prop_gen_list_unique(list *l) {
      * against it in list generation.) */
 
     while (l) {
-        for (list *nl = l->next; nl; nl = nl->next) {
+        list* nl;
+        for (nl = l->next; nl; nl = nl->next) {
             if (nl->v == l->v) { return THEFT_TRIAL_FAIL; }
         }
         l = l->next;
@@ -377,22 +380,24 @@ TEST prng_should_return_same_series_from_same_seeds() {
 
     /* Set for deterministic start */
     theft_set_seed(t, 0xabad5eed);
-    for (int i = 0; i < 8; i++) {
+    int i;
+    for (i = 0; i < 8; i++) {
         seeds[i] = theft_random(t);
     }
 
     /* Populate value tables. */
-    for (int s = 0; s < 8; s++) {
+    int s;
+    for (s = 0; s < 8; s++) {
         theft_set_seed(t, seeds[s]);
-        for (int i = 0; i < 8; i++) {
+        for (i = 0; i < 8; i++) {
             values[s][i] = theft_random(t);
         }
     }
 
     /* Check values. */
-    for (int s = 0; s < 8; s++) {
+    for (s = 0; s < 8; s++) {
         theft_set_seed(t, seeds[s]);
-        for (int i = 0; i < 8; i++) {
+        for (i = 0; i < 8; i++) {
             ASSERT_EQ(values[s][i], theft_random(t));
         }
     }
