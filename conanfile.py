@@ -12,8 +12,6 @@ class LibpngConan(ConanFile):
     ZIP_FOLDER_NAME = "%s-%s" % (name, version)
     generators = "cmake", "txt"
     settings = "os", "arch", "compiler", "build_type"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
     url="http://github.com/lasote/conan-theft"
     license="https://github.com/silentbicycle/theft/blob/v0.2.0/LICENSE"
     exports=["CMakeLists.txt"]
@@ -52,13 +50,7 @@ class LibpngConan(ConanFile):
         self.copy("*.h", "include", "%s" % (self.ZIP_FOLDER_NAME), keep_path=False)
 
         # Copying static and dynamic libs
-        if self.options.shared:
-            if self.settings.os == "Macos":
-                self.copy(pattern="*.dylib", dst="lib", keep_path=False)
-            else:
-                self.copy(pattern="*.so*", dst="lib", src=self.ZIP_FOLDER_NAME, keep_path=False)
-        else:
-            self.copy(pattern="*.a", dst="lib", src=self.ZIP_FOLDER_NAME, keep_path=False)
+        self.copy(pattern="*.a", dst="lib", src=self.ZIP_FOLDER_NAME, keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = ["theft"]
