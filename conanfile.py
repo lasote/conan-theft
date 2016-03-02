@@ -6,7 +6,7 @@ from conans import CMake
 from shutil import copyfile
 
 
-class LibpngConan(ConanFile):
+class LibTheftConan(ConanFile):
     name = "theft"
     version = "0.2.0"
     ZIP_FOLDER_NAME = "%s-%s" % (name, version)
@@ -18,6 +18,10 @@ class LibpngConan(ConanFile):
     
     def config(self):
         self.settings.os.remove("Windows")
+        try: # Try catch can be removed when conan 0.8 is released
+            del self.settings.compiler.libcxx 
+        except: 
+            pass
        
     def source(self):
         zip_name = "v%s.zip" % self.version
